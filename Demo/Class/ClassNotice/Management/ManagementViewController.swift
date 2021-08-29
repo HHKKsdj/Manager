@@ -148,8 +148,29 @@ extension ManagementViewController : UITableViewDataSource,UITableViewDelegate {
         } else if indexPath.section == 1 {
             print("delete")
         } else if indexPath.section == 2 {
-            print("quit")
+            if user.role == "teacher" {
+                deleteClass()
+            } else {
+                print("quit")
+            }
         }
+    }
+    
+    func deleteClass() {
+        let alert = UIAlertController(title: "解散班级", message: "", preferredStyle: .alert)
+        alert.addTextField { (textField: UITextField!) -> Void in
+            textField.placeholder = "请输入密码"
+        }
+        let action1 = UIAlertAction(title: "确定", style: .default, handler: {_ in
+            let password = alert.textFields!.first!
+            if password.text != nil {
+                self.deleteClass(password: password.text!)
+            }
+        })
+        let action2 = UIAlertAction(title: "取消", style: .default, handler: nil)
+        alert.addAction(action1)
+        alert.addAction(action2)
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -180,6 +201,31 @@ extension ManagementViewController {
                     self.autoAccept = false
                 }
                 self.tableView.reloadData()
+            }
+        }
+    }
+    
+    func deleteClass(password:String) {
+        ClassNetwork.shared.DeleteClassRequest(classID: classID, password: password) {(error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                let alter = UIAlertController(title: "操作成功", message: "", preferredStyle: .alert)
+                let action = UIAlertAction(title: "确定", style: .default, handler: {_ in
+                    self.navigationController?.popViewController(animated: true)?.dismiss(animated: true, completion: nil)
+                })
+                alter.addAction(action)
+                self.present(alter, animated: true, completion: nil)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
             }
         }
     }

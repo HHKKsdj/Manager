@@ -109,6 +109,8 @@ class NameListViewController: UITableViewController {
         let managerAction = UIContextualAction(style: .normal, title: title) { (action, view, finished) in
             if title == "设为管理员"{
                 self.setAssistant(assistant: self.nameList[indexPath.row].username)
+            } else if title == "取消管理员"{
+                self.cancelAssistant(assistant: self.nameList[indexPath.row].username)
             }
             self.tableView.reloadData()
             finished(true)
@@ -178,7 +180,34 @@ extension NameListViewController {
                 print("nil")
                 return
             }
-            
+            if content.code == 200 {
+                self.setData()
+                self.tableView.reloadData()
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            }
+        }
+    }
+    func cancelAssistant(assistant:String) {
+        ClassNetwork.shared.CancelAssistantRequest(classID: classID, assistants: assistant) {(error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                self.setData()
+                self.tableView.reloadData()
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            }
         }
     }
 }

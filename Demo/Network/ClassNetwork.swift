@@ -1060,6 +1060,29 @@ class ClassNetwork {
         }
     }
     
+    //MARK: SetAssistant
+        func CancelAssistantRequest(classID:String,assistants:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+            let token = UserDefaults.standard.string(forKey: "token")! as String
+            let headers : HTTPHeaders = ["token":token]
+            let parameters : [String:Any] = ["classID":classID,"assistants":assistants]
+
+            let url = "http://goback.jessieback.top/classes/\(classID)/cancelAssistant"
+            AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+                switch responds.result {
+                    case .success(let value):
+                        let json = JSON(value)
+                        let info = RespondInfo()
+                                    
+                        print(json)
+                        info.code = json["code"].intValue
+                            
+                        completion(nil, info)
+                    case .failure(let error):
+                        completion(error, nil)
+                }
+            }
+        }
+    
 //MARK: RemoveStu
     func RemoveStuRequest(classID:String,username:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
         let token = UserDefaults.standard.string(forKey: "token")! as String
@@ -1134,6 +1157,28 @@ class ClassNetwork {
             let parameters : [String:Any] = ["classID":classID,"nid":signID]
 
             let url = "http://goback.jessieback.top/classes/\(classID)/deleteSign"
+            AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+                switch responds.result {
+                    case .success(let value):
+                        let json = JSON(value)
+                        let info = RespondInfo()
+                                    
+                        print(json)
+                        info.code = json["code"].intValue
+                            
+                        completion(nil, info)
+                    case .failure(let error):
+                        completion(error, nil)
+                }
+            }
+        }
+    //MARK: DeleteClass
+        func DeleteClassRequest(classID:String,password:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+            let token = UserDefaults.standard.string(forKey: "token")! as String
+            let headers : HTTPHeaders = ["token":token]
+            let parameters : [String:Any] = ["classID":classID,"password":password]
+
+            let url = "http://goback.jessieback.top/classes/\(classID)/deleteClass"
             AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
                 switch responds.result {
                     case .success(let value):
