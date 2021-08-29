@@ -143,7 +143,9 @@ extension ClassNoticeViewController : UITableViewDelegate,UITableViewDataSource 
             } else {
                 cell.endTime.text = "截止时间:" + notice.deadline
             }
-            if unconfirmedSignin.contains(notice.signID) || unconfirmedVote.contains(notice.vid) || unconfirmedAnnouncement.contains(notice.nid) {
+            if user.role == "teacher" && noticeList[indexPath.row].publisher == user.username {
+                cell.markImageView.isHidden = true
+            } else if unconfirmedSignin.contains(notice.signID) || unconfirmedVote.contains(notice.vid) || unconfirmedAnnouncement.contains(notice.nid) {
                 cell.markImageView.isHidden = false
             } else {
                 cell.markImageView.isHidden = true
@@ -213,6 +215,27 @@ extension ClassNoticeViewController : UITableViewDelegate,UITableViewDataSource 
         naviVC.modalPresentationStyle = .fullScreen
         naviVC.modalTransitionStyle = .crossDissolve
         self.present(naviVC, animated: true, completion: nil)
+    }
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let notice = noticeList[indexPath.row]
+        if user.role != "student" && notice.type != "活动抽签" && notice.type != "课堂问答" {
+            let deleteAction = UIContextualAction(style: .destructive, title: "删除") { (action, view, finished) in
+                if notice.type == "公告" {
+                    self.deleteAnnouncement(id: notice.nid, indexPath: indexPath)
+                } else if notice.type == "投票" {
+                    self.deleteVote(id: notice.vid, indexPath: indexPath)
+                } else if notice.type == "定时签到" || notice.type == "手势签到" {
+                    self.deleteSignin(id: notice.signID, indexPath: indexPath)
+                }
+                finished(true)
+            }
+
+            let actions = UISwipeActionsConfiguration(actions: [deleteAction])
+            actions.performsFirstActionWithFullSwipe = false
+            return actions
+        } else {
+            return nil
+        }
     }
 }
 //MARK: Network
@@ -329,6 +352,67 @@ extension ClassNoticeViewController {
                 self.unconfirmedVote = content.unconfirmedVote
                 self.unconfirmedAnnouncement = content.unconfirmedAnnouncement
 //                self.sort()
+            }
+        }
+    }
+    
+    func deleteAnnouncement(id:Int,indexPath:IndexPath) {
+        ClassNetwork.shared.DeleteAnnouncementRequest(classID: classID, nid: id) {(error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                self.noticeList.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            }
+        }
+    }
+    func deleteVote(id:Int,indexPath:IndexPath) {
+        ClassNetwork.shared.DeleteVoteRequest(classID: classID, vid: id) {(error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                self.noticeList.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            }
+        }
+    }
+    func deleteSignin(id:Int,indexPath:IndexPath) {
+        ClassNetwork.shared.DeleteSigninRequest(classID: classID, signID: id) {(error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                self.noticeList.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
             }
         }
     }

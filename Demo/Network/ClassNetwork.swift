@@ -1059,4 +1059,94 @@ class ClassNetwork {
             }
         }
     }
+    
+//MARK: RemoveStu
+    func RemoveStuRequest(classID:String,username:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+        let token = UserDefaults.standard.string(forKey: "token")! as String
+        let headers : HTTPHeaders = ["token":token]
+        let parameters : [String:Any] = ["classID":classID,"username":username]
+
+        let url = "http://goback.jessieback.top/classes/\(classID)/removeStu"
+        AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+            switch responds.result {
+                case .success(let value):
+                    let json = JSON(value)
+                    let info = RespondInfo()
+                                
+                    print(json)
+                    info.code = json["code"].intValue
+                        
+                    completion(nil, info)
+                case .failure(let error):
+                    completion(error, nil)
+            }
+        }
+    }
+    
+//MARK: DeleteAnnouncement
+    func DeleteAnnouncementRequest(classID:String,nid:Int, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+        let token = UserDefaults.standard.string(forKey: "token")! as String
+        let headers : HTTPHeaders = ["token":token]
+        let parameters : [String:Any] = ["classID":classID,"nid":nid]
+
+        let url = "http://goback.jessieback.top/classes/\(classID)/deleteNotice"
+        AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+            switch responds.result {
+                case .success(let value):
+                    let json = JSON(value)
+                    let info = RespondInfo()
+                                
+                    print(json)
+                    info.code = json["code"].intValue
+                        
+                    completion(nil, info)
+                case .failure(let error):
+                    completion(error, nil)
+            }
+        }
+    }
+    //MARK: DeleteVote
+        func DeleteVoteRequest(classID:String,vid:Int, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+            let token = UserDefaults.standard.string(forKey: "token")! as String
+            let headers : HTTPHeaders = ["token":token]
+            let parameters : [String:Any] = ["classID":classID,"nid":vid]
+
+            let url = "http://goback.jessieback.top/classes/\(classID)/deleteVote"
+            AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+                switch responds.result {
+                    case .success(let value):
+                        let json = JSON(value)
+                        let info = RespondInfo()
+                                    
+                        print(json)
+                        info.code = json["code"].intValue
+                            
+                        completion(nil, info)
+                    case .failure(let error):
+                        completion(error, nil)
+                }
+            }
+        }
+    //MARK: DeleteSignin
+        func DeleteSigninRequest(classID:String,signID:Int, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+            let token = UserDefaults.standard.string(forKey: "token")! as String
+            let headers : HTTPHeaders = ["token":token]
+            let parameters : [String:Any] = ["classID":classID,"nid":signID]
+
+            let url = "http://goback.jessieback.top/classes/\(classID)/deleteSign"
+            AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+                switch responds.result {
+                    case .success(let value):
+                        let json = JSON(value)
+                        let info = RespondInfo()
+                                    
+                        print(json)
+                        info.code = json["code"].intValue
+                            
+                        completion(nil, info)
+                    case .failure(let error):
+                        completion(error, nil)
+                }
+            }
+        }
 }

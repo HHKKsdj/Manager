@@ -95,8 +95,14 @@ class NoticeViewController: UIViewController {
                 self.noticeList = self.byTimeList
             case 6:
                 self.noticeList = self.byGestureList
-//            case <#pattern#>:
-//                <#code#>
+            case 7:
+                var list = [NoticeInfo]()
+                for notice in self.receivedList {
+                    if self.unconfirmedVote.contains(notice.vid) || self.unconfirmedAnnouncement.contains(notice.vid) || self.unconfirmedSignin.contains(notice.nid) {
+                        list.append(notice)
+                    }
+                }
+                self.noticeList = list
             default:
                 print("error")
             }
@@ -166,7 +172,7 @@ class NoticeViewController: UIViewController {
 
     }
 
-    func sort() {
+    func sortAll() {
         var list1 = [NoticeInfo]()
         var list2 = [NoticeInfo]()
         for notice in receivedList {
@@ -182,8 +188,31 @@ class NoticeViewController: UIViewController {
         confirmedList = list2.sorted { (s1, s2) -> Bool in
             return s1.publishTime > s2.publishTime
         }
-        noticeList = unconfirmedList + confirmedList
+//        noticeList = unconfirmedList + confirmedList
+        receivedList = unconfirmedList + confirmedList
+        sentList = sentList.sorted { (s1, s2) -> Bool in
+            return s1.publishTime > s2.publishTime
+        }
         tableView.reloadData()
+    }
+    
+    func sort(list:[NoticeInfo]) -> [NoticeInfo] {
+        var list1 = [NoticeInfo]()
+        var list2 = [NoticeInfo]()
+        for notice in list {
+            if unconfirmedSignin.contains(notice.signID) || unconfirmedVote.contains(notice.vid) || unconfirmedAnnouncement.contains(notice.nid) {
+                list1.append(notice)
+            } else {
+                list2.append(notice)
+            }
+        }
+        list1 = list1.sorted { (s1, s2) -> Bool in
+            return s1.deadline < s2.deadline
+        }
+        list2 = list2.sorted { (s1, s2) -> Bool in
+            return s1.publishTime > s2.publishTime
+        }
+        return list1 + list2
     }
     
     @objc func segmentDidChange(sender:UISegmentedControl) {
@@ -302,6 +331,28 @@ extension NoticeViewController : UITableViewDelegate,UITableViewDataSource {
         naviVC.modalTransitionStyle = .crossDissolve
         self.present(naviVC, animated: true, completion: nil)
     }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let notice = noticeList[indexPath.row]
+        if user.role != "student" && notice.type != "活动抽签" && notice.type != "课堂问答" {
+            let deleteAction = UIContextualAction(style: .destructive, title: "删除") { (action, view, finished) in
+                if notice.type == "公告" {
+                    self.deleteAnnouncement(classID: notice.classID, id: notice.nid, indexPath: indexPath)
+                } else if notice.type == "投票" {
+                    self.deleteVote(classID: notice.classID, id: notice.vid, indexPath: indexPath)
+                } else if notice.type == "定时签到" || notice.type == "手势签到" {
+                    self.deleteSignin(classID: notice.classID, id: notice.signID, indexPath: indexPath)
+                }
+                finished(true)
+            }
+
+            let actions = UISwipeActionsConfiguration(actions: [deleteAction])
+            actions.performsFirstActionWithFullSwipe = false
+            return actions
+        } else {
+            return nil
+        }
+    }
 }
 
 //MARK: Network
@@ -369,9 +420,20 @@ extension NoticeViewController {
                 return
             }
             if content.code == 200 {
-                self.receivedList += content.noticeList
-                self.announcementList1 = content.noticeList
-                self.sort()
+                if self.user.role != "student" {
+                    for notice in content.noticeList {
+                        if notice.publisher == self.user.username {
+                            self.sentList.append(notice)
+                        } else {
+                            self.receivedList.append(notice)
+                        }
+                    }
+                } else {
+                    self.receivedList += content.noticeList
+                }
+                
+                self.announcementList1 = self.sort(list: content.noticeList)
+                self.sortAll()
             }
         }
     }
@@ -386,9 +448,19 @@ extension NoticeViewController {
                 return
             }
             if content.code == 200 {
-                self.receivedList += content.noticeList
-                self.announcementList2 = content.noticeList
-                self.sort()
+                if self.user.role != "student" {
+                    for notice in content.noticeList {
+                        if notice.publisher == self.user.username {
+                            self.sentList.append(notice)
+                        } else {
+                            self.receivedList.append(notice)
+                        }
+                    }
+                } else {
+                    self.receivedList += content.noticeList
+                }
+                self.announcementList2 = self.sort(list: content.noticeList)
+                self.sortAll()
             }
         }
     }
@@ -404,9 +476,19 @@ extension NoticeViewController {
             }
 //            if content.code == 200 {
             if content.noticeList.count != 0 {
-                self.receivedList += content.noticeList
-                self.voteList = content.noticeList
-                self.sort()
+                if self.user.role != "student" {
+                    for notice in content.noticeList {
+                        if notice.publisher == self.user.username {
+                            self.sentList.append(notice)
+                        } else {
+                            self.receivedList.append(notice)
+                        }
+                    }
+                } else {
+                    self.receivedList += content.noticeList
+                }
+                self.voteList = self.sort(list: content.noticeList)
+                self.sortAll()
             }
         }
     }
@@ -421,7 +503,17 @@ extension NoticeViewController {
                 return
             }
             if content.noticeList.count != 0 {
-                self.receivedList += content.noticeList
+                if self.user.role != "student" {
+                    for notice in content.noticeList {
+                        if notice.publisher == self.user.username {
+                            self.sentList.append(notice)
+                        } else {
+                            self.receivedList.append(notice)
+                        }
+                    }
+                } else {
+                    self.receivedList += content.noticeList
+                }
                 var byTime = [NoticeInfo]()
                 var byGesture = [NoticeInfo]()
                 for notice in content.noticeList {
@@ -431,9 +523,9 @@ extension NoticeViewController {
                         byTime.append(notice)
                     }
                 }
-                self.byTimeList = byTime
-                self.byGestureList = byGesture
-                self.sort()
+                self.byTimeList = self.sort(list: byTime)
+                self.byGestureList = self.sort(list: byGesture)
+                self.sortAll()
             }
         }
     }
@@ -448,9 +540,19 @@ extension NoticeViewController {
                 return
             }
             if content.code == 200 {
-                self.receivedList += content.noticeList
-                self.drawList = content.noticeList
-                self.sort()
+                if self.user.role != "student" {
+                    for notice in content.noticeList {
+                        if notice.publisher == self.user.username {
+                            self.sentList.append(notice)
+                        } else {
+                            self.receivedList.append(notice)
+                        }
+                    }
+                } else {
+                    self.receivedList += content.noticeList
+                }
+                self.drawList = self.sort(list: content.noticeList)
+                self.sortAll()
             }
         }
     }
@@ -465,9 +567,19 @@ extension NoticeViewController {
                 return
             }
             if content.code == 200 {
-                self.receivedList += content.noticeList
-                self.questionList = content.noticeList
-                self.sort()
+                if self.user.role != "student" {
+                    for notice in content.noticeList {
+                        if notice.publisher == self.user.username {
+                            self.sentList.append(notice)
+                        } else {
+                            self.receivedList.append(notice)
+                        }
+                    }
+                } else {
+                    self.receivedList += content.noticeList
+                }
+                self.questionList = self.sort(list: content.noticeList)
+                self.sortAll()
             }
         }
     }
@@ -491,8 +603,8 @@ extension NoticeViewController {
         }
     }
     
-    func getSentList() {
-        UserNetwork.shared.AllOperationRequest{(error,info) in
+    func deleteAnnouncement(classID:String,id:Int,indexPath:IndexPath) {
+        ClassNetwork.shared.DeleteAnnouncementRequest(classID: classID, nid: id) {(error,info) in
             if let error = error {
                 print(error)
                 return
@@ -501,9 +613,99 @@ extension NoticeViewController {
                 print("nil")
                 return
             }
-            
+            if content.code == 200 {
+                for i in 0..<self.announcementList1.count {
+                    if self.announcementList1[i] == self.noticeList[indexPath.row] {
+                        self.announcementList1.remove(at: i)
+                        break
+                    }
+                }
+                for i in 0..<self.announcementList2.count {
+                    if self.announcementList2[i] == self.noticeList[indexPath.row] {
+                        self.announcementList2.remove(at: i)
+                        break
+                    }
+                }
+                self.noticeList.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            }
         }
     }
+    func deleteVote(classID:String,id:Int,indexPath:IndexPath) {
+        ClassNetwork.shared.DeleteVoteRequest(classID: classID, vid: id) {(error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                for i in 0..<self.voteList.count {
+                    if self.voteList[i] == self.noticeList[indexPath.row] {
+                        self.voteList.remove(at: i)
+                        break
+                    }
+                }
+                self.noticeList.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            }
+        }
+    }
+    func deleteSignin(classID:String,id:Int,indexPath:IndexPath) {
+        ClassNetwork.shared.DeleteSigninRequest(classID: classID, signID: id) {(error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                for i in 0..<self.byTimeList.count {
+                    if self.byTimeList[i] == self.noticeList[indexPath.row] {
+                        self.byTimeList.remove(at: i)
+                        break
+                    }
+                }
+                for i in 0..<self.byGestureList.count {
+                    if self.byGestureList[i] == self.noticeList[indexPath.row] {
+                        self.byGestureList.remove(at: i)
+                        break
+                    }
+                }
+                self.noticeList.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            }
+        }
+    }
+//    func getSentList() {
+//        UserNetwork.shared.AllOperationRequest{(error,info) in
+//            if let error = error {
+//                print(error)
+//                return
+//            }
+//            guard let content = info else {
+//                print("nil")
+//                return
+//            }
+//
+//        }
+//    }
     
 }
 

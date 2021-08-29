@@ -90,8 +90,9 @@ class NameListViewController: UITableViewController {
         }
         let deleteAction = UIContextualAction(style: .destructive, title: "删除") { (action, view, finished) in
 
-            self.nameList.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+//            self.nameList.remove(at: indexPath.row)
+            self.remove(username: self.nameList[indexPath.row].username,indexPath:indexPath)
+//            tableView.deleteRows(at: [indexPath], with: .automatic)
             print("delete")
 
             // 回调告知执行成功，否则不会删除此行！！！
@@ -144,6 +145,26 @@ extension NameListViewController {
             if content.studentList.count != 0 {
                 self.nameList = content.teacherList + content.monitorList + content.assistantList + content.studentList
                 self.tableView.reloadData()
+            }
+        }
+    }
+    func remove(username:String,indexPath:IndexPath) {
+        ClassNetwork.shared.RemoveStuRequest(classID: classID, username: username) {(error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                self.nameList.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
             }
         }
     }
