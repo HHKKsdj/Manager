@@ -104,7 +104,8 @@ class NoticeViewController: UIViewController {
                 }
                 self.noticeList = list
             default:
-                print("error")
+//                print("error")
+                self.noticeList = self.receivedList
             }
             self.tableView.reloadData()
         }
@@ -434,6 +435,7 @@ extension NoticeViewController {
                 
                 self.announcementList1 = self.sort(list: content.noticeList)
                 self.sortAll()
+                self.tableView.reloadData()
             }
         }
     }
@@ -461,6 +463,7 @@ extension NoticeViewController {
                 }
                 self.announcementList2 = self.sort(list: content.noticeList)
                 self.sortAll()
+                self.tableView.reloadData()
             }
         }
     }
@@ -489,6 +492,7 @@ extension NoticeViewController {
                 }
                 self.voteList = self.sort(list: content.noticeList)
                 self.sortAll()
+                self.tableView.reloadData()
             }
         }
     }
@@ -526,6 +530,7 @@ extension NoticeViewController {
                 self.byTimeList = self.sort(list: byTime)
                 self.byGestureList = self.sort(list: byGesture)
                 self.sortAll()
+                self.tableView.reloadData()
             }
         }
     }
@@ -553,6 +558,7 @@ extension NoticeViewController {
                 }
                 self.drawList = self.sort(list: content.noticeList)
                 self.sortAll()
+                self.tableView.reloadData()
             }
         }
     }
@@ -580,6 +586,7 @@ extension NoticeViewController {
                 }
                 self.questionList = self.sort(list: content.noticeList)
                 self.sortAll()
+                self.tableView.reloadData()
             }
         }
     }
@@ -599,6 +606,7 @@ extension NoticeViewController {
                 self.unconfirmedVote += content.unconfirmedVote
                 self.unconfirmedAnnouncement += content.unconfirmedAnnouncement
 //                self.sort()
+                self.tableView.reloadData()
             }
         }
     }

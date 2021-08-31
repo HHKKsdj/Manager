@@ -61,7 +61,7 @@ class UserNetwork {
     }
 //MARK: Register
     func RegisterRequest(username:String, password:String,realName:String,_ completion: @escaping (Error?, RespondInfo?) -> ()) {
-        let parameters : [String:Any] = ["username":username,"password":password,"realName":realName]
+        let parameters : [String:Any] = ["username":username,"password":password,"realName":realName,"role":"student"]
         let url = "http://goback.jessieback.top/user/register"
         AF.request(url,method: .post,parameters: parameters).responseJSON { responds in
 

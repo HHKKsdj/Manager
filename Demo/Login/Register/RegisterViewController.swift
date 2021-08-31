@@ -211,6 +211,10 @@ extension RegisterViewController {
         }
     }
     func compareCode() {
+//        let setVC = SetViewController()
+//        setVC.code = self.codeText.text!
+//        setVC.username = self.userText.text!
+//        self.navigationController?.pushViewController(setVC, animated: true)
         if codeText.text!.count > 0 {
             UserNetwork.shared.CompareCodeRequest(username: userText.text!, mailCode: codeText.text!) { (error,info) in
                 if let error = error {

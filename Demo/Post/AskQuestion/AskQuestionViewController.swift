@@ -29,6 +29,7 @@ class AskQuestionViewController: UIViewController {
     var goodButton : UIButton!
     var sosoButton : UIButton!
     var badButton : UIButton!
+    var deadButton : UIButton!
     
     var target = [String]()
     var userName = ""
@@ -85,10 +86,10 @@ class AskQuestionViewController: UIViewController {
         self.view.addSubview(name)
         name.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
-            make.top.equalTo(targetView.snp.bottom).offset(50)
+            make.top.equalTo(targetView.snp.bottom).offset(30)
         }
         
-        startButton = UIButton.init(frame: CGRect(x: self.view.frame.width/4, y: self.view.frame.height/4 + 50, width: 200, height: 200))
+        startButton = UIButton.init(frame: CGRect(x: self.view.frame.width/4, y: self.view.frame.height/4 + 20, width: 200, height: 200))
         startButton.setTitle("开始", for: .normal)
         startButton.titleLabel?.font = UIFont.systemFont(ofSize: 35)
         startButton.backgroundColor = UIColor.systemTeal
@@ -105,7 +106,7 @@ class AskQuestionViewController: UIViewController {
         goodButton.addTarget(self, action: #selector(good(sender:)), for: .touchUpInside)
         self.view.addSubview(goodButton)
         goodButton.snp.makeConstraints { (make) in
-            make.top.equalTo(startButton.snp.bottom).offset(75)
+            make.top.equalTo(startButton.snp.bottom).offset(55)
             make.centerX.equalToSuperview()
             make.width.equalTo(250)
         }
@@ -135,6 +136,19 @@ class AskQuestionViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.width.equalTo(250)
         }
+        
+        deadButton = UIButton.init()
+        deadButton.setTitle("缺勤", for: .normal)
+        deadButton.backgroundColor = UIColor.systemGray
+        deadButton.layer.masksToBounds = true
+        deadButton.layer.cornerRadius = 12.0
+        deadButton.addTarget(self, action: #selector(dead(sender:)), for: .touchUpInside)
+        self.view.addSubview(deadButton)
+        deadButton.snp.makeConstraints { (make) in
+            make.top.equalTo(badButton.snp.bottom).offset(50)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(250)
+        }
     }
     
     @objc func targetList () {
@@ -161,6 +175,9 @@ class AskQuestionViewController: UIViewController {
     }
     @objc func bad (sender: UIButton) {
         addPoint(point: 0)
+    }
+    @objc func dead (sender: UIButton) {
+//        addPoint(point: 0)
     }
     @objc func back (sender:UIBarButtonItem) {
         self.dismiss(animated: true, completion: nil)

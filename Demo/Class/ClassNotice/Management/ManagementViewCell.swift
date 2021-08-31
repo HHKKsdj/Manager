@@ -150,3 +150,53 @@ class QuitCell: UITableViewCell {
     }
 
 }
+
+class ClassCodeCell: UITableViewCell {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        setUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    var contentLabel : UITextView!
+    var titleLabel : UILabel!
+    
+    func setUI() {
+        
+        titleLabel = UILabel.init()
+        self.contentView.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.left.equalToSuperview().offset(15)
+        }
+        
+        contentLabel = UITextView.init()
+        contentLabel.font = UIFont.systemFont(ofSize: 17.5)
+        contentLabel.isEditable = false
+        contentLabel.textAlignment = .right
+        self.contentView.addSubview(contentLabel)
+        contentLabel.snp.makeConstraints { (make) in
+            make.top.equalToSuperview().offset(7.5)
+            make.height.equalTo(25)
+            make.right.equalToSuperview().offset(-35)
+            make.width.equalTo(250)
+        }
+        
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        // Configure the view for the selected state
+    }
+
+}
+

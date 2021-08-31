@@ -41,6 +41,7 @@ class ManagementViewController: UIViewController {
         tableView.register(DeleteCell.self, forCellReuseIdentifier: "DeleteCell")
         tableView.register(QuitCell.self, forCellReuseIdentifier: "QuitCell")
         tableView.register(CheckCell.self, forCellReuseIdentifier: "CheckCell")
+        tableView.register(ClassCodeCell.self, forCellReuseIdentifier: "ClassCodeCell")
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.top.equalToSuperview()
@@ -81,7 +82,10 @@ extension ManagementViewController : UITableViewDataSource,UITableViewDelegate {
         if indexPath.section == 0 {
             switch indexPath.row {
             case 0:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "InformationCell", for: indexPath) as! InformationCell
+//                let cell = tableView.dequeueReusableCell(withIdentifier: "InformationCell", for: indexPath) as! InformationCell
+//                cell.titleLabel.text = "班级码"
+//                cell.contentLabel.text = classID
+                let cell = tableView.dequeueReusableCell(withIdentifier: "ClassCodeCell", for: indexPath) as! ClassCodeCell
                 cell.titleLabel.text = "班级码"
                 cell.contentLabel.text = classID
                 cell.selectionStyle = .none

@@ -53,13 +53,13 @@ class CreatClassViewController: UIViewController {
             make.width.equalTo(250)
         }
         
-        timeLabel = UILabel.init()
-        timeLabel.text = "上课时间"
-        self.view.addSubview(timeLabel)
-        timeLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(nameLabel.snp.bottom).offset(50)
-            make.left.equalTo(nameLabel.snp.left)
-        }
+//        timeLabel = UILabel.init()
+//        timeLabel.text = "上课时间"
+//        self.view.addSubview(timeLabel)
+//        timeLabel.snp.makeConstraints { (make) in
+//            make.top.equalTo(nameLabel.snp.bottom).offset(50)
+//            make.left.equalTo(nameLabel.snp.left)
+//        }
 
 //        timeText = UITextView.init()
 //        timeText.isEditable = true
@@ -71,51 +71,51 @@ class CreatClassViewController: UIViewController {
 //        timeText.layer.cornerRadius = 12.0
 //        timeText.layer.borderWidth = 0.5
 //        timeText.layer.borderColor = UIColor.gray.cgColor
-        timeText = UITextField.init()
-        timeText.placeholder = "请输入上课时间"
-        timeText.borderStyle = UITextField.BorderStyle.roundedRect
-        timeText.layer.masksToBounds = true
-        timeText.layer.cornerRadius = 12.0
-        timeText.layer.borderWidth = 0.5
-        timeText.layer.borderColor = UIColor.gray.cgColor
-        timeText.returnKeyType = .done
-        timeText.delegate = self
-        self.view.addSubview(timeText)
-        timeText.snp.makeConstraints { (make) in
-            make.centerY.equalTo(timeLabel.snp.centerY)
-            make.left.equalTo(nameText.snp.left)
-            make.width.equalTo(250)
-        }
-        
-        collegeLabel = UILabel.init()
-        collegeLabel.text = "授课学院"
-        self.view.addSubview(collegeLabel)
-        collegeLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(timeLabel.snp.bottom).offset(50)
-            make.left.equalTo(nameLabel.snp.left)
-        }
-        
-        collegeText = UITextField.init()
-        collegeText.placeholder = "请输入授课学院"
-        collegeText.borderStyle = UITextField.BorderStyle.roundedRect
-        collegeText.layer.masksToBounds = true
-        collegeText.layer.cornerRadius = 12.0
-        collegeText.layer.borderWidth = 0.5
-        collegeText.layer.borderColor = UIColor.gray.cgColor
-        collegeText.returnKeyType = .done
-        collegeText.delegate = self
-        self.view.addSubview(collegeText)
-        collegeText.snp.makeConstraints { (make) in
-            make.centerY.equalTo(collegeLabel.snp.centerY)
-            make.left.equalTo(nameText.snp.left)
-            make.width.equalTo(250)
-        }
+//        timeText = UITextField.init()
+//        timeText.placeholder = "请输入上课时间"
+//        timeText.borderStyle = UITextField.BorderStyle.roundedRect
+//        timeText.layer.masksToBounds = true
+//        timeText.layer.cornerRadius = 12.0
+//        timeText.layer.borderWidth = 0.5
+//        timeText.layer.borderColor = UIColor.gray.cgColor
+//        timeText.returnKeyType = .done
+//        timeText.delegate = self
+//        self.view.addSubview(timeText)
+//        timeText.snp.makeConstraints { (make) in
+//            make.centerY.equalTo(timeLabel.snp.centerY)
+//            make.left.equalTo(nameText.snp.left)
+//            make.width.equalTo(250)
+//        }
+//
+//        collegeLabel = UILabel.init()
+//        collegeLabel.text = "授课学院"
+//        self.view.addSubview(collegeLabel)
+//        collegeLabel.snp.makeConstraints { (make) in
+//            make.top.equalTo(timeLabel.snp.bottom).offset(50)
+//            make.left.equalTo(nameLabel.snp.left)
+//        }
+//
+//        collegeText = UITextField.init()
+//        collegeText.placeholder = "请输入授课学院"
+//        collegeText.borderStyle = UITextField.BorderStyle.roundedRect
+//        collegeText.layer.masksToBounds = true
+//        collegeText.layer.cornerRadius = 12.0
+//        collegeText.layer.borderWidth = 0.5
+//        collegeText.layer.borderColor = UIColor.gray.cgColor
+//        collegeText.returnKeyType = .done
+//        collegeText.delegate = self
+//        self.view.addSubview(collegeText)
+//        collegeText.snp.makeConstraints { (make) in
+//            make.centerY.equalTo(collegeLabel.snp.centerY)
+//            make.left.equalTo(nameText.snp.left)
+//            make.width.equalTo(250)
+//        }
         
         checkLabel = UILabel.init()
         checkLabel.text = "无需审核"
         self.view.addSubview(checkLabel)
         checkLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(collegeLabel.snp.bottom).offset(50)
+            make.top.equalTo(nameLabel.snp.bottom).offset(50)
             make.left.equalTo(nameLabel.snp.left)
         }
         
