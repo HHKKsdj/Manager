@@ -197,7 +197,13 @@ class UserNetwork {
     }
 //MARK: isLogin
     func IsLoginRequest(_ completion: @escaping (Error?, RespondInfo?) -> ()) {
-        let token = UserDefaults.standard.string(forKey: "token")! as String
+        var token = ""
+        if UserDefaults.standard.string(forKey: "token") != nil {
+            token = UserDefaults.standard.string(forKey: "token")!
+        } else {
+            token = "nil"
+        }
+
         let headers : HTTPHeaders = ["token":token]
 
         let url = "http://goback.jessieback.top/user/loginSuccess"
@@ -229,6 +235,30 @@ class UserNetwork {
                     
                     print(json)
                     info.code = json["code"].intValue
+                    completion(nil, info)
+                case .failure(let error):
+                    completion(error, nil)
+            }
+        }
+    }
+    
+//MARK: WeChat
+    func WeChatRequest(_ completion: @escaping (Error?, RespondInfo?) -> ()) {
+        let token = UserDefaults.standard.string(forKey: "token")! as String
+        let headers : HTTPHeaders = ["token":token]
+
+        let url = "http://goback.jessieback.top/wechat/bind"
+        AF.request(url,method: .post,headers: headers).responseJSON { responds in
+                switch responds.result {
+                case .success(let value):
+                    let json = JSON(value)
+                    let info = RespondInfo()
+                    
+                    print(json)
+                    info.code = json["code"].intValue
+                    if info.code == 200 {
+                        info.data = json["data"].stringValue
+                    }
                     completion(nil, info)
                 case .failure(let error):
                     completion(error, nil)

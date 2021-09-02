@@ -16,6 +16,7 @@ class CheckByGestureViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"), style: UIBarButtonItem.Style.done, target: self, action: #selector(back(sender:)))
         self.navigationItem.title = "手势签到"
         // Do any additional setup after loading the view.
+        times = UserDefaults.standard.integer(forKey: "\(notice.signID)")
         getName()
         signinDetail()
         setUI()
@@ -32,6 +33,7 @@ class CheckByGestureViewController: UIViewController {
     }()
     var password = ""
     
+    var times = 0
     var notice = NoticeInfo()
     var notSigninList = [String]()
     var nameList = [UserInfo]()
@@ -43,6 +45,7 @@ class CheckByGestureViewController: UIViewController {
     var orderLabel : UILabel!
     var checkButton : UIButton!
     var confirmed = false
+    var label : UILabel!
     
     func setUI() {
         titleLabel = UILabel.init()
@@ -62,7 +65,7 @@ class CheckByGestureViewController: UIViewController {
         self.view.addSubview(nameLabel)
         nameLabel.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(15)
-            make.top.equalTo(titleLabel.snp.bottom).offset(15)
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
         }
         
         startTime = UILabel.init()
@@ -72,7 +75,7 @@ class CheckByGestureViewController: UIViewController {
         startTime.font = UIFont.systemFont(ofSize: 12.5)
         self.view.addSubview(startTime)
         startTime.snp.makeConstraints { (make) in
-            make.left.equalTo(nameLabel.snp.right).offset(10)
+            make.left.equalTo(nameLabel.snp.right).offset(5)
             make.top.equalTo(nameLabel.snp.top)
         }
         
@@ -84,7 +87,7 @@ class CheckByGestureViewController: UIViewController {
         self.view.addSubview(endTime)
         endTime.snp.makeConstraints { (make) in
             make.top.equalTo(startTime.snp.top)
-            make.right.equalToSuperview().offset(-15)
+            make.right.equalToSuperview().offset(-10)
         }
         
         involveButton = UIButton.init()
@@ -119,26 +122,46 @@ class CheckByGestureViewController: UIViewController {
         }
         self.view.addSubview(gestureView)
         
-        checkButton = UIButton.init()
-        if confirmed == false {
-            checkButton.setTitle("签到", for: .normal)
-            checkButton.backgroundColor = UIColor.link
-        } else {
-            checkButton.backgroundColor = UIColor.lightGray
-            checkButton.setTitle("已签到", for: .normal)
-            checkButton.isEnabled = false
-            gestureView.isUserInteractionEnabled = false
-        }
-        checkButton.titleLabel?.font = UIFont.systemFont(ofSize: 20)
-        checkButton.layer.masksToBounds = true
-        checkButton.layer.cornerRadius = 12.0
-        checkButton.addTarget(self, action: #selector(check(sender:)), for: .touchUpInside)
-        self.view.addSubview(checkButton)
-        checkButton.snp.makeConstraints{ (make) in
+        label = UILabel.init()
+        label.text = "错误次数达到上限！"
+        label.textColor = UIColor.red
+        label.isHidden = true
+        self.view.addSubview(label)
+        label.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-25)
-            make.width.equalToSuperview().offset(-100)
+            make.top.equalTo(gestureView.snp.bottom).offset(15)
         }
+        
+        if times == 3 {
+            gestureView.isUserInteractionEnabled = false
+            label.isHidden = false
+        }
+        
+        if confirmed != false {
+            label.text = "已签到"
+            gestureView.isUserInteractionEnabled = false
+            label.isHidden = false
+        }
+//        checkButton = UIButton.init()
+//        if confirmed == false {
+//            checkButton.setTitle("签到", for: .normal)
+//            checkButton.backgroundColor = UIColor.link
+//        } else {
+//            checkButton.backgroundColor = UIColor.lightGray
+//            checkButton.setTitle("已签到", for: .normal)
+//            checkButton.isEnabled = false
+//            gestureView.isUserInteractionEnabled = false
+//        }
+//        checkButton.titleLabel?.font = UIFont.systemFont(ofSize: 20)
+//        checkButton.layer.masksToBounds = true
+//        checkButton.layer.cornerRadius = 12.0
+//        checkButton.addTarget(self, action: #selector(check(sender:)), for: .touchUpInside)
+//        self.view.addSubview(checkButton)
+//        checkButton.snp.makeConstraints{ (make) in
+//            make.centerX.equalToSuperview()
+//            make.bottom.equalToSuperview().offset(-25)
+//            make.width.equalToSuperview().offset(-100)
+//        }
     }
     
     @objc func check (sender:UIButton) {
@@ -180,7 +203,7 @@ extension CheckByGestureViewController: GPasswordEventDelegate {
     func touchesEnded() {
         orderLabel.text = "手势顺序: \(password)"
 //        print(password)
-        
+        signin()
         password = ""
     }
 }
@@ -203,11 +226,21 @@ extension CheckByGestureViewController {
                 self.checkButton.backgroundColor = UIColor.lightGray
                 self.checkButton.setTitle("已签到", for: .normal)
                 self.checkButton.isEnabled = false
+                self.gestureView.isUserInteractionEnabled = false
+                self.label.text = "已签到"
+                self.label.isHidden = false
             } else {
-                let alter = UIAlertController(title: "签到失败", message: "", preferredStyle: .alert)
+                self.times += 1
+                UserDefaults.standard.set(self.times, forKey: "\(self.notice.signID)")
+                let alter = UIAlertController(title: "签到失败", message: "还可尝试\(3-self.times)次", preferredStyle: .alert)
                 let action = UIAlertAction(title: "确定", style: .default, handler: nil)
                 alter.addAction(action)
                 self.present(alter, animated: true, completion: nil)
+                if self.times == 3 {
+                    self.gestureView.isUserInteractionEnabled = false
+                    self.label.isHidden = false
+                    self.label.text = "错误次数达到上限！"
+                }
             }
         }
     }
@@ -221,7 +254,7 @@ extension CheckByGestureViewController {
                 print("nil")
                 return
             }
-            if content.notConfirmList.count != 0 {
+            if content.code == 200 {
                 self.notSigninList = content.notConfirmList
             }
         }

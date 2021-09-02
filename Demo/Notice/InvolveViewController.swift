@@ -40,6 +40,8 @@ class InvolveViewController: UIViewController {
     var okList = [String]()
     var list = [String]()
     var notice = NoticeInfo()
+    var classID = ""
+    var signID = 0
     
     func setUI() {
         chartView = PieChartView()
@@ -175,23 +177,52 @@ extension InvolveViewController : UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        if user.role == "student" {
+        if user.role == "student" || !notice.type.contains("签到") {
             return nil
         }
         
         let action1 = UIContextualAction(style: .destructive, title: "缺勤") { (action, view, finished) in
-
+            self.absent(userName: self.list[indexPath.row])
+            for i in 0..<self.okList.count {
+                if self.okList[i] == self.list[indexPath.row] {
+                    self.okList.remove(at: i)
+                    break
+                }
+            }
+            var percent : Float = 0
+            if self.nameList.count != 0 && self.okList.count != 0 {
+                percent = Float(self.okList.count)/Float(self.nameList.count)
+            }
+            self.chartView.centerText = "\(100*percent)%\n已参与"
+            self.setData()
+            self.tableView.reloadData()
             finished(true)
         }
 
         let action2 = UIContextualAction(style: .normal, title: "请假") { (action, view, finished) in
-            
+            self.supplySignin(userName: self.list[indexPath.row])
+            self.okList.append(self.list[indexPath.row])
+            var percent : Float = 0
+            if self.nameList.count != 0 && self.okList.count != 0 {
+                percent = Float(self.okList.count)/Float(self.nameList.count)
+            }
+            self.chartView.centerText = "\(100*percent)%\n已参与"
+            self.setData()
+            self.tableView.reloadData()
             finished(true)
         }
         action2.backgroundColor = UIColor.systemGreen
         
         let action3 = UIContextualAction(style: .normal, title: "签到") { (action, view, finished) in
-            
+            self.supplySignin(userName: self.list[indexPath.row])
+            self.okList.append(self.list[indexPath.row])
+            var percent : Float = 0
+            if self.nameList.count != 0 && self.okList.count != 0 {
+                percent = Float(self.okList.count)/Float(self.nameList.count)
+            }
+            self.chartView.centerText = "\(100*percent)%\n已参与"
+            self.setData()
+            self.tableView.reloadData()
             finished(true)
         }
         action3.backgroundColor = UIColor.systemTeal
@@ -202,4 +233,53 @@ extension InvolveViewController : UITableViewDelegate,UITableViewDataSource {
         return actions
     }
 
+}
+
+//MARK: Network
+
+extension InvolveViewController {
+    func absent(userName:String) {
+        ClassNetwork.shared.AbsentRequest(classID: classID, students: userName){ (error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                let alter = UIAlertController(title: "操作成功", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                let action = UIAlertAction(title: "确定", style: .default, handler: nil)
+                alter.addAction(action)
+                self.present(alter, animated: true, completion: nil)
+            }
+        }
+    }
+    func supplySignin(userName:String) {
+        ClassNetwork.shared.SupplySigninRequest(classID: classID, signID:signID, student: userName){ (error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                let alter = UIAlertController(title: "操作成功", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                let action = UIAlertAction(title: "确定", style: .default, handler: nil)
+                alter.addAction(action)
+                self.present(alter, animated: true, completion: nil)
+            }
+        }
+    }
 }

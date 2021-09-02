@@ -62,7 +62,7 @@ class FileViewCell: UITableViewCell {
     }
     
     @objc func download (sender:UIButton) {
-        ClassNetwork.shared.DownloadRequest(classID: file.classID,fid: file.fid) {(error,info) in
+        ClassNetwork.shared.DownloadRequest(classID: file.classID,fid: file.fid, fileName: file.name) {(error,info) in
             if let error = error {
                 print(error)
                 self.delegate?.respond(title: "文件已存在", msg: "可在手机文件中查看")

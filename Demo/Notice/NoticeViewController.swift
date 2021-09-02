@@ -98,7 +98,7 @@ class NoticeViewController: UIViewController {
             case 7:
                 var list = [NoticeInfo]()
                 for notice in self.receivedList {
-                    if self.unconfirmedVote.contains(notice.vid) || self.unconfirmedAnnouncement.contains(notice.vid) || self.unconfirmedSignin.contains(notice.nid) {
+                    if self.unconfirmedVote.contains(notice.vid) || self.unconfirmedAnnouncement.contains(notice.nid) || self.unconfirmedSignin.contains(notice.signID) {
                         list.append(notice)
                     }
                 }
@@ -189,7 +189,7 @@ class NoticeViewController: UIViewController {
         confirmedList = list2.sorted { (s1, s2) -> Bool in
             return s1.publishTime > s2.publishTime
         }
-//        noticeList = unconfirmedList + confirmedList
+        noticeList = unconfirmedList + confirmedList
         receivedList = unconfirmedList + confirmedList
         sentList = sentList.sorted { (s1, s2) -> Bool in
             return s1.publishTime > s2.publishTime
@@ -748,6 +748,8 @@ extension NoticeViewController {
             let involveVC = InvolveViewController()
             involveVC.nameList = nameList
             involveVC.okList = confirmList
+            involveVC.classID = notice.classID
+            involveVC.signID = notice.signID
             self.navigationController?.pushViewController(involveVC, animated: true)
         }
     }

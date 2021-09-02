@@ -29,7 +29,7 @@ class AskQuestionViewController: UIViewController {
     var goodButton : UIButton!
     var sosoButton : UIButton!
     var badButton : UIButton!
-    var deadButton : UIButton!
+    var absentButton : UIButton!
     
     var target = [String]()
     var userName = ""
@@ -137,14 +137,14 @@ class AskQuestionViewController: UIViewController {
             make.width.equalTo(250)
         }
         
-        deadButton = UIButton.init()
-        deadButton.setTitle("缺勤", for: .normal)
-        deadButton.backgroundColor = UIColor.systemGray
-        deadButton.layer.masksToBounds = true
-        deadButton.layer.cornerRadius = 12.0
-        deadButton.addTarget(self, action: #selector(dead(sender:)), for: .touchUpInside)
-        self.view.addSubview(deadButton)
-        deadButton.snp.makeConstraints { (make) in
+        absentButton = UIButton.init()
+        absentButton.setTitle("缺勤", for: .normal)
+        absentButton.backgroundColor = UIColor.systemGray
+        absentButton.layer.masksToBounds = true
+        absentButton.layer.cornerRadius = 12.0
+        absentButton.addTarget(self, action: #selector(absent(sender:)), for: .touchUpInside)
+        self.view.addSubview(absentButton)
+        absentButton.snp.makeConstraints { (make) in
             make.top.equalTo(badButton.snp.bottom).offset(50)
             make.centerX.equalToSuperview()
             make.width.equalTo(250)
@@ -176,8 +176,8 @@ class AskQuestionViewController: UIViewController {
     @objc func bad (sender: UIButton) {
         addPoint(point: 0)
     }
-    @objc func dead (sender: UIButton) {
-//        addPoint(point: 0)
+    @objc func absent (sender: UIButton) {
+        absent()
     }
     @objc func back (sender:UIBarButtonItem) {
         self.dismiss(animated: true, completion: nil)
@@ -264,6 +264,31 @@ extension AskQuestionViewController {
                     alter.addAction(action)
                     self.present(alter, animated: true, completion: nil)
                 }                
+            }
+        }
+    }
+    
+    func absent() {
+        if name.text != nil {
+            ClassNetwork.shared.AbsentRequest(classID: target[0], students: userName){ (error,info) in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                guard let content = info else {
+                    print("nil")
+                    return
+                }
+                if content.code == 200 {
+                    let alter = UIAlertController(title: "评价成功", message: "", preferredStyle: .alert)
+                    self.present(alter, animated: true, completion: nil)
+                    self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+                } else {
+                    let alter = UIAlertController(title: "评价失败", message: "", preferredStyle: .alert)
+                    let action = UIAlertAction(title: "确定", style: .default, handler: nil)
+                    alter.addAction(action)
+                    self.present(alter, animated: true, completion: nil)
+                }
             }
         }
     }

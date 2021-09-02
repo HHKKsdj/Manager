@@ -282,7 +282,7 @@ class ClassNetwork {
                     
                     print(json)
                     info.code = json["code"].intValue
-                    
+                    info.msg = json["msg"].stringValue
                     completion(nil, info)
                 case .failure(let error):
                     completion(error, nil)
@@ -821,6 +821,8 @@ class ClassNetwork {
                     let json = JSON(value)
                     let info = RespondInfo()
                     info.code = json["code"].intValue
+                    info.msg = json["msg"].stringValue
+                    info.data = "\(json["data"].intValue)"
                     print(json)
                     completion(nil, info)
                 case .failure(let error):
@@ -831,6 +833,63 @@ class ClassNetwork {
             .uploadProgress { progress in
                 print("当前进度: \(progress.fractionCompleted)")
             }
+    }
+    
+
+//MARK: UploadImage
+    func UploadImageRequest(classID:String,data:Data,fileName:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+        let token = UserDefaults.standard.string(forKey: "token")! as String
+        let headers : HTTPHeaders = ["token":token]
+        
+        let url = "http://goback.jessieback.top/classes/\(classID)/upload"
+        
+        AF.upload(multipartFormData: { uploads in
+            uploads.append(data, withName: "upload", fileName: fileName, mimeType: "image/jpeg")
+        },to: url,method: .post, headers: headers)
+            .responseJSON { response in
+                switch response.result {
+                case .success(let value):
+                    let json = JSON(value)
+                    let info = RespondInfo()
+                    info.code = json["code"].intValue
+                    info.msg = json["msg"].stringValue
+                    info.data = "\(json["data"].intValue)"
+                    print(json)
+                    completion(nil, info)
+                case .failure(let error):
+                    print("nil")
+                    completion(error, nil)
+                }
+            }
+            .uploadProgress { progress in
+                print("当前进度: \(progress.fractionCompleted)")
+            }
+       
+    }
+    
+    
+//MARK: DeleteFile
+    func DeleteFileRequest(classID:String,fid:Int, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+        let token = UserDefaults.standard.string(forKey: "token")! as String
+        let headers : HTTPHeaders = ["token":token]
+        let parameters : [String:Any] = ["classID":classID,"fid":fid]
+
+        let url = "http://goback.jessieback.top/classes/\(classID)/deleteFile"
+        AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+
+            switch responds.result {
+                case .success(let value):
+                    let json = JSON(value)
+                    let info = RespondInfo()
+                            
+                    print(json)
+                    info.code = json["code"].intValue
+                    
+                    completion(nil, info)
+                case .failure(let error):
+                    completion(error, nil)
+            }
+        }
     }
     
 //MARK: noticeConfirmedStu
@@ -906,9 +965,13 @@ class ClassNetwork {
                 case .success(let value):
                     let json = JSON(value)
                     let info = RespondInfo()
-                            
                     print(json)
-                    
+                    info.code = json["code"].intValue
+                    if info.code == 200 {
+                        for (_,name) in json["data"] {
+                            info.notConfirmList.append(name.stringValue)
+                        }
+                    }
                     completion(nil, info)
                 case .failure(let error):
                     completion(error, nil)
@@ -976,14 +1039,20 @@ class ClassNetwork {
     }
     
 //MARK: Download
-    func DownloadRequest(classID:String,fid:Int, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+    func DownloadRequest(classID:String,fid:Int,fileName:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
         let token = UserDefaults.standard.string(forKey: "token")! as String
         let headers : HTTPHeaders = ["token":token]
         let parameters : [String:Any] = ["classID":classID,"fid":fid]
 
         let url = "http://goback.jessieback.top/classes/\(classID)/download"
-        let destination = Alamofire.DownloadRequest.suggestedDownloadDestination(for: .documentDirectory)
         
+//        let destination = Alamofire.DownloadRequest.suggestedDownloadDestination(for: .documentDirectory)
+        
+        let destination: DownloadRequest.Destination = { _, response in
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let fileURL = documentsURL.appendingPathComponent(fileName)
+            return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
+        }
         AF.download(url,parameters: parameters,headers: headers, to: destination)
         .downloadProgress { progress in
             print("当前进度: \(progress.fractionCompleted)")
@@ -1003,6 +1072,39 @@ class ClassNetwork {
         }
     }
     
+//MARK: GetAFile
+    func GetAFileRequest(classID:String,fid:Int, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+        let token = UserDefaults.standard.string(forKey: "token")! as String
+        let headers : HTTPHeaders = ["token":token]
+        let parameters : [String:Any] = ["classID":classID,"fid":fid]
+
+        let url = "http://goback.jessieback.top/classes/\(classID)/file"
+        AF.request(url,method: .get,parameters: parameters,headers: headers).responseJSON { responds in
+            switch responds.result {
+                case .success(let value):
+                    let json = JSON(value)
+                    let info = RespondInfo()
+                            
+                    print(json)
+                    if json["name"] != "" {
+                        let file = FileInfo()
+                        file.classID = json["classID"].stringValue
+                        file.fid = json["fid"].intValue
+                        file.name = json["name"].stringValue
+                        file.path = json["path"].stringValue
+                        file.fileHash = json["hash"].stringValue
+                        file.type = json["type"].stringValue
+                        file.uploadTime = json["uploadTime"].stringValue
+                        file.username = json["username"].stringValue
+                        info.file = file
+                    }
+                    
+                    completion(nil, info)
+                case .failure(let error):
+                    completion(error, nil)
+            }
+        }
+    }
 //MARK: GetUnconfirmed
     func GetUnconfirmedRequest(classID:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
         let token = UserDefaults.standard.string(forKey: "token")! as String
@@ -1194,4 +1296,70 @@ class ClassNetwork {
                 }
             }
         }
+//MARK: QuitClass
+    func QuitClassRequest(classID:String,username:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+        let token = UserDefaults.standard.string(forKey: "token")! as String
+        let headers : HTTPHeaders = ["token":token]
+        let parameters : [String:Any] = ["classID":classID,"username":username]
+
+        let url = "http://goback.jessieback.top/classes/\(classID)/quit"
+        AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+            switch responds.result {
+                case .success(let value):
+                    let json = JSON(value)
+                    let info = RespondInfo()
+                                
+                    print(json)
+                    info.code = json["code"].intValue
+                        
+                    completion(nil, info)
+                case .failure(let error):
+                    completion(error, nil)
+            }
+        }
+    }
+//MARK: Absent
+    func AbsentRequest(classID:String,students:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+        let token = UserDefaults.standard.string(forKey: "token")! as String
+        let headers : HTTPHeaders = ["token":token]
+        let parameters : [String:Any] = ["classID":classID,"students":students,"reason":"缺勤"]
+
+        let url = "http://goback.jessieback.top/classes/\(classID)/absent"
+        AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+            switch responds.result {
+                case .success(let value):
+                    let json = JSON(value)
+                    let info = RespondInfo()
+                                
+                    print(json)
+                    info.code = json["code"].intValue
+                        
+                    completion(nil, info)
+                case .failure(let error):
+                    completion(error, nil)
+            }
+        }
+    }
+//MARK: SupplySignin
+    func SupplySigninRequest(classID:String,signID:Int,student:String, _ completion: @escaping (Error?, RespondInfo?) -> ()) {
+        let token = UserDefaults.standard.string(forKey: "token")! as String
+        let headers : HTTPHeaders = ["token":token]
+        let parameters : [String:Any] = ["classID":classID,"student":student,"signID":signID]
+
+        let url = "http://goback.jessieback.top/classes/\(classID)/supplySign"
+        AF.request(url,method: .post,parameters: parameters,headers: headers).responseJSON { responds in
+            switch responds.result {
+                case .success(let value):
+                    let json = JSON(value)
+                    let info = RespondInfo()
+                                
+                    print(json)
+                    info.code = json["code"].intValue
+                        
+                    completion(nil, info)
+                case .failure(let error):
+                    completion(error, nil)
+            }
+        }
+    }
 }

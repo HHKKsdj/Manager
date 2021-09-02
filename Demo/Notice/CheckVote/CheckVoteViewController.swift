@@ -88,7 +88,7 @@ class CheckVoteViewController: UIViewController {
         nameLabel.font = UIFont.systemFont(ofSize: 12.5)
         self.view.addSubview(nameLabel)
         nameLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(titleLabel.snp.left).offset(15)
+            make.left.equalTo(titleLabel.snp.left).offset(5)
             make.top.equalTo(titleLabel.snp.bottom).offset(15)
         }
         
@@ -99,7 +99,7 @@ class CheckVoteViewController: UIViewController {
         startTime.font = UIFont.systemFont(ofSize: 12.5)
         self.view.addSubview(startTime)
         startTime.snp.makeConstraints { (make) in
-            make.left.equalTo(nameLabel.snp.right).offset(10)
+            make.left.equalTo(nameLabel.snp.right).offset(5)
             make.top.equalTo(nameLabel.snp.top)
         }
         

@@ -191,8 +191,8 @@ extension SetViewController {
                 return
             }
             if content.code == 200 {
-                let alter = UIAlertController(title: "注册成功", message: "请重新登录", preferredStyle: .alert)
-                let action = UIAlertAction(title: "确定", style: .default, handler: {_ in
+                let alter = UIAlertController(title: "注册成功", message: "稍后可在“我的”——“帮助”中绑定公众号，以获取最新通知", preferredStyle: .alert)
+                let action = UIAlertAction(title: "返回登录", style: .default, handler: {_ in
                     self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
                 })
                 alter.addAction(action)

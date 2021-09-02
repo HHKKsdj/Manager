@@ -155,7 +155,14 @@ extension ManagementViewController : UITableViewDataSource,UITableViewDelegate {
             if user.role == "teacher" {
                 deleteClass()
             } else {
-                print("quit")
+                let alert = UIAlertController(title: "是否确定班级？", message: "", preferredStyle: .alert)
+                let action1 = UIAlertAction(title: "确定", style: .default, handler: {_ in
+                    self.quitClass()
+                })
+                let action2 = UIAlertAction(title: "取消", style: .default, handler: nil)
+                alert.addAction(action1)
+                alert.addAction(action2)
+                self.present(alert, animated: true, completion: nil)
             }
         }
     }
@@ -186,7 +193,7 @@ extension ManagementViewController : errorDelegate {
         self.present(alter, animated: true, completion: nil)
     }
 }
-
+//MARK: Network
 extension ManagementViewController {
     func IfAutoAccept() {
         ClassNetwork.shared.IfAutoAcceptRequest(classID: classID) {(error,info) in
@@ -211,6 +218,30 @@ extension ManagementViewController {
     
     func deleteClass(password:String) {
         ClassNetwork.shared.DeleteClassRequest(classID: classID, password: password) {(error,info) in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let content = info else {
+                print("nil")
+                return
+            }
+            if content.code == 200 {
+                let alter = UIAlertController(title: "操作成功", message: "", preferredStyle: .alert)
+                let action = UIAlertAction(title: "确定", style: .default, handler: {_ in
+                    self.navigationController?.popViewController(animated: true)?.dismiss(animated: true, completion: nil)
+                })
+                alter.addAction(action)
+                self.present(alter, animated: true, completion: nil)
+            } else {
+                let alter = UIAlertController(title: "操作失败", message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+            }
+        }
+    }
+    func quitClass() {
+        ClassNetwork.shared.QuitClassRequest(classID: classID, username: user.username) {(error,info) in
             if let error = error {
                 print(error)
                 return

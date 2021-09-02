@@ -52,7 +52,7 @@ class CheckByTimeViewController: UIViewController {
         nameLabel.font = UIFont.systemFont(ofSize: 12.5)
         self.view.addSubview(nameLabel)
         nameLabel.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(15)
+            make.left.equalToSuperview().offset(10)
             make.top.equalTo(titleLabel.snp.bottom).offset(15)
         }
         
@@ -63,7 +63,7 @@ class CheckByTimeViewController: UIViewController {
         startTime.font = UIFont.systemFont(ofSize: 12.5)
         self.view.addSubview(startTime)
         startTime.snp.makeConstraints { (make) in
-            make.left.equalTo(nameLabel.snp.right).offset(10)
+            make.left.equalTo(nameLabel.snp.right).offset(5)
             make.top.equalTo(nameLabel.snp.top)
         }
         
@@ -75,7 +75,7 @@ class CheckByTimeViewController: UIViewController {
         self.view.addSubview(endTime)
         endTime.snp.makeConstraints { (make) in
             make.top.equalTo(startTime.snp.top)
-            make.right.equalToSuperview().offset(-15)
+            make.right.equalToSuperview().offset(-10)
         }
         
         involveButton = UIButton.init()
@@ -179,7 +179,7 @@ extension CheckByTimeViewController {
                 print("nil")
                 return
             }
-            if content.notConfirmList.count != 0 {
+            if content.code == 200 {
                 self.notSigninList = content.notConfirmList
             }
         }

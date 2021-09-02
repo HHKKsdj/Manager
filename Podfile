@@ -16,4 +16,6 @@ target 'Demo' do
   pod 'BTNavigationDropdownMenu'
   pod 'CryptoSwift', '~> 1.4.1'
   pod "ESPullToRefresh"
+  pod 'Kingfisher', '~> 6.0'
+
 end

@@ -11,8 +11,6 @@
 		46749C8626AFA703007797AF /* DrawViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46749C8526AFA703007797AF /* DrawViewCell.swift */; };
 		46749C9226AFE17F007797AF /* VoteViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46749C9126AFE17F007797AF /* VoteViewCell.swift */; };
 		46749C9426B0FF83007797AF /* NoticeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46749C9326B0FF83007797AF /* NoticeCell.swift */; };
-		46749C9626B10041007797AF /* ReceivedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46749C9526B10041007797AF /* ReceivedView.swift */; };
-		46749C9826B10077007797AF /* SentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46749C9726B10077007797AF /* SentView.swift */; };
 		46749C9B26B14D6B007797AF /* CheckAnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46749C9A26B14D6B007797AF /* CheckAnnouncementViewController.swift */; };
 		46749C9D26B14D7C007797AF /* CheckVoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46749C9C26B14D7C007797AF /* CheckVoteViewController.swift */; };
 		46749CA326B15076007797AF /* CheckAskQuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46749CA226B15076007797AF /* CheckAskQuestionViewController.swift */; };
@@ -62,7 +60,6 @@
 		46D3C3AA26A946DF00F5E575 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D3C3A926A946DF00F5E575 /* AnnouncementViewController.swift */; };
 		46D3C3AC26A946EB00F5E575 /* VoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D3C3AB26A946EB00F5E575 /* VoteViewController.swift */; };
 		46D3C3AE26A946FF00F5E575 /* DrawViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D3C3AD26A946FF00F5E575 /* DrawViewController.swift */; };
-		46D3C3B026A9471700F5E575 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D3C3AF26A9471700F5E575 /* RegistrationViewController.swift */; };
 		46D3C3B726AA6D9D00F5E575 /* AnnouncementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D3C3B626AA6D9D00F5E575 /* AnnouncementTableViewCell.swift */; };
 		46D3C3B926ABB71300F5E575 /* ByTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D3C3B826ABB71300F5E575 /* ByTimeViewController.swift */; };
 		46D3C3BB26ABB7A900F5E575 /* ByGestureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D3C3BA26ABB7A900F5E575 /* ByGestureViewController.swift */; };
@@ -103,8 +100,6 @@
 		46749C8526AFA703007797AF /* DrawViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawViewCell.swift; sourceTree = "<group>"; };
 		46749C9126AFE17F007797AF /* VoteViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteViewCell.swift; sourceTree = "<group>"; };
 		46749C9326B0FF83007797AF /* NoticeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeCell.swift; sourceTree = "<group>"; };
-		46749C9526B10041007797AF /* ReceivedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceivedView.swift; sourceTree = "<group>"; };
-		46749C9726B10077007797AF /* SentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentView.swift; sourceTree = "<group>"; };
 		46749C9A26B14D6B007797AF /* CheckAnnouncementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckAnnouncementViewController.swift; sourceTree = "<group>"; };
 		46749C9C26B14D7C007797AF /* CheckVoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckVoteViewController.swift; sourceTree = "<group>"; };
 		46749CA226B15076007797AF /* CheckAskQuestionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckAskQuestionViewController.swift; sourceTree = "<group>"; };
@@ -160,7 +155,6 @@
 		46D3C3A926A946DF00F5E575 /* AnnouncementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementViewController.swift; sourceTree = "<group>"; };
 		46D3C3AB26A946EB00F5E575 /* VoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteViewController.swift; sourceTree = "<group>"; };
 		46D3C3AD26A946FF00F5E575 /* DrawViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawViewController.swift; sourceTree = "<group>"; };
-		46D3C3AF26A9471700F5E575 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		46D3C3B626AA6D9D00F5E575 /* AnnouncementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewCell.swift; sourceTree = "<group>"; };
 		46D3C3B826ABB71300F5E575 /* ByTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByTimeViewController.swift; sourceTree = "<group>"; };
 		46D3C3BA26ABB7A900F5E575 /* ByGestureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByGestureViewController.swift; sourceTree = "<group>"; };
@@ -462,8 +456,6 @@
 			isa = PBXGroup;
 			children = (
 				46D3C39D26A90C4900F5E575 /* NoticeViewController.swift */,
-				46749C9526B10041007797AF /* ReceivedView.swift */,
-				46749C9726B10077007797AF /* SentView.swift */,
 				46749C9326B0FF83007797AF /* NoticeCell.swift */,
 				46749C9926B14CFE007797AF /* CheckAnnouncement */,
 				46749C9E26B14F81007797AF /* CheckVote */,
@@ -504,7 +496,6 @@
 		46D3C3A526A944EC00F5E575 /* Registration */ = {
 			isa = PBXGroup;
 			children = (
-				46D3C3AF26A9471700F5E575 /* RegistrationViewController.swift */,
 				46D3C3B826ABB71300F5E575 /* ByTimeViewController.swift */,
 				46D3C3BA26ABB7A900F5E575 /* ByGestureViewController.swift */,
 				46D3C3BC26AE6E2D00F5E575 /* ByGestureViewCell.swift */,
@@ -762,7 +753,6 @@
 				46749CEE26BD2BDD007797AF /* TargetListViewCell.swift in Sources */,
 				46D8C70F26D4E1F300AC0214 /* FileViewCell.swift in Sources */,
 				46D3C3BD26AE6E2E00F5E575 /* ByGestureViewCell.swift in Sources */,
-				46749C9626B10041007797AF /* ReceivedView.swift in Sources */,
 				46D3C36E26A9065C00F5E575 /* TabBarViewController.swift in Sources */,
 				46749C9426B0FF83007797AF /* NoticeCell.swift in Sources */,
 				46749CB826B63F22007797AF /* PasswordViewController.swift in Sources */,
@@ -784,7 +774,6 @@
 				46749CEA26BD215A007797AF /* ClassListViewCell.swift in Sources */,
 				46749CC426B6DEB1007797AF /* IdentifyViewController.swift in Sources */,
 				46D3C3BB26ABB7A900F5E575 /* ByGestureViewController.swift in Sources */,
-				46D3C3B026A9471700F5E575 /* RegistrationViewController.swift in Sources */,
 				46D8C6F926BE3CD500AC0214 /* RespondInfo.swift in Sources */,
 				46749CC026B6CBC1007797AF /* MineViewCell.swift in Sources */,
 				46D8C70426C1618100AC0214 /* ClassInfo.swift in Sources */,
@@ -802,7 +791,6 @@
 				46749CC626B6DEE3007797AF /* ResetPasswordViewController.swift in Sources */,
 				46D3C39E26A90C4900F5E575 /* NoticeViewController.swift in Sources */,
 				46D3C3A426A90C7700F5E575 /* MineViewController.swift in Sources */,
-				46749C9826B10077007797AF /* SentView.swift in Sources */,
 				46D3C3A226A90C6C00F5E575 /* ClassViewController.swift in Sources */,
 				46749CE426BA3453007797AF /* NameListViewCell.swift in Sources */,
 				46D3C3B726AA6D9D00F5E575 /* AnnouncementTableViewCell.swift in Sources */,
@@ -1000,7 +988,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = HK.Demo;
+				PRODUCT_BUNDLE_IDENTIFIER = HK.Manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1020,7 +1008,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = HK.Demo;
+				PRODUCT_BUNDLE_IDENTIFIER = HK.Manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

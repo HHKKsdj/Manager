@@ -155,20 +155,20 @@ extension CheckAskQuestionViewController : UITableViewDelegate,UITableViewDataSo
         return 50
     }
     
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        if user.role == "student" {
-            return nil
-        }
-        let action = UIContextualAction(style: .destructive, title: "缺勤") { (action, view, finished) in
-
-
-            // 回调告知执行成功，否则不会删除此行！！！
-            finished(true)
-        }
-
-        let actions = UISwipeActionsConfiguration(actions: [action])
-        actions.performsFirstActionWithFullSwipe = false
-//        return UISwipeActionsConfiguration(actions: [deleteAction, archiveAction])
-        return actions
-    }
+//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//        if user.role == "student" {
+//            return nil
+//        }
+//        let action = UIContextualAction(style: .destructive, title: "缺勤") { (action, view, finished) in
+//
+//
+//            // 回调告知执行成功，否则不会删除此行！！！
+//            finished(true)
+//        }
+//
+//        let actions = UISwipeActionsConfiguration(actions: [action])
+//        actions.performsFirstActionWithFullSwipe = false
+////        return UISwipeActionsConfiguration(actions: [deleteAction, archiveAction])
+//        return actions
+//    }
 }

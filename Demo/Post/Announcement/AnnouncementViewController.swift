@@ -42,7 +42,8 @@ class AnnouncementViewController: UIViewController {
     var fileList = [String]()
     var SHA256List = [String]()
     var dataList = [Data]()
-    
+    var fidList = [String]()
+    var imageidList = [String]()
     
     func setUI() {
         sendButton = UIButton.init()
@@ -93,7 +94,16 @@ class AnnouncementViewController: UIViewController {
             for i in 0..<classTag.count {
                 if classTag[i] == 1 {
                     target.append(classList[i].classId)
-                    publish(id:classList[i].classId,row: i)
+                    if imageList.count != 0 {
+                        uploadImage(classID: classList[i].classId,row: i)
+                    } else if dataList.count != 0 {
+                        upload(classID: classList[i].classId,row: i)
+                    } else {
+                        publish(id:classList[i].classId,row: i)
+                    }
+//                    publish(id:classList[i].classId,row: i)
+//                    upload(classID: classList[i].classId)
+//                    uploadImage(classID: classList[i].classId)
                 }
             }
         }
@@ -365,6 +375,27 @@ extension AnnouncementViewController : DeleteDelegate {
 
 //MARK: Network
 extension AnnouncementViewController {
+    func addID(text:String) -> String {
+        var str = text
+        str += "{"
+        if imageidList.count != 0 {
+            str += imageidList[0]
+            for i in 1..<imageidList.count {
+                str += "," + imageidList[i]
+            }
+        }
+        str += ":"
+        if fidList.count != 0 {
+            str += fidList[0]
+            for i in 1..<fidList.count {
+                str += "," + fidList[i]
+            }
+        }
+        str += "}"
+        print(str)
+        return str
+    }
+    
     func publish(id:String,row:Int) {
         var name = [String]()
         for i in 0..<nameTag[row].count {
@@ -372,7 +403,8 @@ extension AnnouncementViewController {
                 name.append(nameList[row][i])
             }
         }
-        ClassNetwork.shared.PublishNoticeRequest(classID: id, title: self.titleText, body: self.contentText, deadLine: self.date!,isPublic: true,students: name){ (error,info) in
+        let contentText = addID(text: self.contentText)
+        ClassNetwork.shared.PublishNoticeRequest(classID: id, title: self.titleText, body: contentText, deadLine: self.date!,isPublic: true,students: name){ (error,info) in
             if let error = error {
                 print(error)
                 return
@@ -382,17 +414,16 @@ extension AnnouncementViewController {
                 return
             }
             if content.code == 200 {
-                self.upload(classID: id)
                 if id == self.target.last {
                     self.done()
                 }
             } else {
-                self.error()
+                self.error(msg: content.msg)
             }
         }
     }
 
-    func upload(classID:String) {
+    func upload(classID:String,row:Int) {
         for i in 0..<dataList.count {
             let hash = dataList[i].sha256().toHexString()
             ClassNetwork.shared.UploadRequest(classID: classID, hash: hash, fileName: fileList[i], fileURL: filePathList[i], data: dataList[i]){ (error,info) in
@@ -405,14 +436,44 @@ extension AnnouncementViewController {
                     return
                 }
                 if content.code == 200 {
-                    if classID == self.target.last {
-                        self.done()
+                    self.fidList.append(content.data)
+                    if i == self.dataList.count-1 {
+                        self.publish(id: classID, row: row)
                     }
                 } else {
-                    self.error()
+                    self.error(msg: content.msg)
                 }
             }
         }
+    }
+    
+    func uploadImage(classID:String,row:Int) {
+        for i in 0..<imageList.count {
+            let data = imageList[i].jpegData(compressionQuality: 0.5)!
+            ClassNetwork.shared.UploadImageRequest(classID: classID, data: data, fileName: "\(self.titleText!):\(i).jpeg"){ (error,info) in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                guard let content = info else {
+                    print("nil")
+                    return
+                }
+                if content.code == 200 {
+                    self.imageidList.append(content.data)
+                    if i == self.imageList.count-1 {
+                        if self.dataList.count != 0 {
+                            self.upload(classID: classID,row: row)
+                        } else {
+                            self.publish(id:classID,row: row)
+                        }
+                    }
+                } else {
+                    self.error(msg: content.msg)
+                }
+            }
+        }
+        
     }
     
     func done() {
@@ -423,8 +484,8 @@ extension AnnouncementViewController {
         alter.addAction(action)
         self.present(alter, animated: true, completion: nil)
     }
-    func error() {
-        let alter = UIAlertController(title: "发送失败", message: "", preferredStyle: .alert)
+    func error(msg:String) {
+        let alter = UIAlertController(title: "发送失败", message: msg, preferredStyle: .alert)
         let action = UIAlertAction(title: "确定", style: .default, handler: nil)
         alter.addAction(action)
         self.present(alter, animated: true, completion: nil)

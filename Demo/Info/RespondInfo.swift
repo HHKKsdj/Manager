@@ -17,6 +17,7 @@ class RespondInfo : NSObject ,NSCoding {
     var nameList = [UserInfo]()
     var noticeList = [NoticeInfo]()
     var fileList = [FileInfo]()
+    var file = FileInfo()
     var drawList = [String]()
     var confirmList = [String]()
     var notConfirmList = [String]()
