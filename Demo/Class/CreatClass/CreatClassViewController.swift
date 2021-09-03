@@ -172,7 +172,7 @@ extension CreatClassViewController: UITextViewDelegate,UITextFieldDelegate {
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
             //点击空白处收起键盘
-        timeText.resignFirstResponder()
+//        timeText.resignFirstResponder()
         nameText.resignFirstResponder()
         self.view.endEditing(false)
 

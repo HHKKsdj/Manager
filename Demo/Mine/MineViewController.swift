@@ -141,16 +141,14 @@ extension MineViewController {
             var title = ""
             if content.code == 200 {
                 title = "退出成功"
-//                UserDefaults.standard.set("", forKey: "token")
-                
                 self.view.window?.rootViewController = LoginViewController()
                 self.dismiss(animated: true, completion: nil)
             } else {
                 title = "退出失败"
+                let alter = UIAlertController(title: title, message: "", preferredStyle: .alert)
+                self.present(alter, animated: true, completion: nil)
+                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
             }
-            let alter = UIAlertController(title: title, message: "", preferredStyle: .alert)
-            self.present(alter, animated: true, completion: nil)
-            self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
         }
     }
 }
