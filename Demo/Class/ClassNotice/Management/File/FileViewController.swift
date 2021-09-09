@@ -84,9 +84,12 @@ extension FileViewController : UITableViewDelegate,UITableViewDataSource {
 
 extension FileViewController : FileDelegate {
     func respond(title: String, msg: String) {
-        let alter = UIAlertController(title: title, message: msg, preferredStyle: .alert)
-        self.present(alter, animated: true, completion: nil)
-        self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1.5)
+        let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
+        self.present(alert, animated: true, completion: nil)
+        DispatchQueue.main.asyncAfter(deadline: .now()+1.5) {
+            alert.dismiss(animated: true, completion: nil)
+        }
+//        self.perform(#selector(alert.dismiss(animated:completion:)), with: alert, afterDelay: 1.5)
     }
 }
 

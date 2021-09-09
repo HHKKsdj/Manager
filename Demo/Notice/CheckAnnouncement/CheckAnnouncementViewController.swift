@@ -488,7 +488,10 @@ extension CheckAnnouncementViewController {
                 print(error)
                 let alter = UIAlertController(title: "文件已存在", message: "可在手机文件中查看", preferredStyle: .alert)
                 self.present(alter, animated: true, completion: nil)
-                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1.5)
+                DispatchQueue.main.asyncAfter(deadline: .now()+1.5) {
+                    alter.dismiss(animated: true, completion: nil)
+                }
+//                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1.5)
                 return
             }
             guard let content = info else {
@@ -498,7 +501,10 @@ extension CheckAnnouncementViewController {
             if content.msg == "success" {
                 let alter = UIAlertController(title: "文件保存成功", message: "可在手机文件中查看", preferredStyle: .alert)
                 self.present(alter, animated: true, completion: nil)
-                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1.5)
+//                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1.5)
+                DispatchQueue.main.asyncAfter(deadline: .now()+1.5) {
+                    alter.dismiss(animated: true, completion: nil)
+                }
             }
         }
     }

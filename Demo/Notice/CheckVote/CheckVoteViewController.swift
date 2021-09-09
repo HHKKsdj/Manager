@@ -333,7 +333,10 @@ extension CheckVoteViewController {
             if content.code == 200 {
                 let alter = UIAlertController(title: "投票成功", message: "", preferredStyle: .alert)
                 self.present(alter, animated: true, completion: nil)
-                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
+                DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+                    alter.dismiss(animated: true, completion: nil)
+                }
+//                self.perform(#selector(alter.dismiss(animated:completion:)), with: alter, afterDelay: 1)
                 self.voteButton.backgroundColor = UIColor.lightGray
                 self.voteButton.setTitle("已投票", for: .normal)
                 self.voteButton.isEnabled = false

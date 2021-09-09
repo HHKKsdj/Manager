@@ -20,15 +20,15 @@ class NoticeViewController: UIViewController {
         self.user = try!  NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data!) as! UserInfo
         classList.removeAll()
         noticeList.removeAll()
-        let list = ["公告","投票","课堂问答","活动抽签","定时签到","手势签到"]
-        for i in 0..<6 {
-            let notice = NoticeInfo()
-            notice.type = list[i]
-            notice.title = "testtesttesttest"
-            notice.publisher = "张三"
-            notice.deadline = "2021-12-13 19:00"
-            sentList.append(notice)
-        }
+//        let list = ["公告","投票","课堂问答","活动抽签","定时签到","手势签到"]
+//        for i in 0..<6 {
+//            let notice = NoticeInfo()
+//            notice.type = list[i]
+//            notice.title = "testtesttesttest"
+//            notice.publisher = "张三"
+//            notice.deadline = "2021-12-13 19:00"
+//            sentList.append(notice)
+//        }
         getClassList()
         setUI()
 
